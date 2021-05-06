@@ -1,2 +1,4 @@
 *.o
-./data/*
+STLRulesEvolutionaryInferenceNoClass.iml
+.idea/*
+/data/Next_Generation_Simulation__NGSIM__Vehicle_Trajectories_and_Supporting_Data.csv
