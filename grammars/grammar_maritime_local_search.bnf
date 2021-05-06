@@ -1,0 +1,11 @@
+<expr_first_level> ::= <prop> | <logic_first_level> | <past_first_level>
+<prop> ::= .prop <num_var> <comp> const_num
+<logic_first_level> ::= .not <expr_first_level> | .and <expr_first_level> <expr_first_level>
+<past_first_level> ::= .globally <expr_second_level> const_num const_num | .eventually <expr_second_level> const_num const_num | .until <expr_second_level> const_num const_num <expr_second_level>
+<expr_second_level> ::= <prop> | <logic_second_level> | <past_second_level>
+<logic_second_level> ::= .not <expr_second_level> | .and <expr_second_level> <expr_second_level>
+<past_second_level> ::= .globally <expr_third_level_onwards> const_num const_num | .eventually <expr_third_level_onwards> const_num const_num | .until <expr_third_level_onwards> const_num const_num <expr_third_level_onwards>
+<expr_third_level_onwards> ::= <prop> | <logic_third_level_onwards>
+<logic_third_level_onwards> ::= .not <expr_third_level_onwards> | .and <expr_third_level_onwards> <expr_third_level_onwards>
+<comp> ::= < | >
+<num_var> ::= x1
