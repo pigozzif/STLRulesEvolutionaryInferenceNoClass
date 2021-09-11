@@ -7,11 +7,13 @@ By running
 ```
 java -cp libs:JGEA.jar:libs/moonlight.jar:libs/jblas-1.2.4.jar:target/STLRulesEvolutionaryInferenceNoClass.jar it.untis.malelab.learningstl.Main {args}
 ```
-where `{args}` is a placeholder for the arguments you must provide (see below), you will launch an evolutionary optimization of the formula structure and parameters for Signal Temporal Logic rules of a real traffic dataset. At the same time, a number of evolution metadata will be saved inside the `output` folder.
+where `{args}` is a placeholder for the arguments you must provide (see below), you will launch a grammar-based evolutionary optimization of the formula structure and parameters for Signal Temporal Logic rules of a real traffic dataset. At the same time, a number of evolution metadata will be saved inside the `output` folder.
 
 ## Structure
 * `src` contains all the source code for the project;
 * `libs` contains the .jar files for the dependencies (see below);
+* `grammars` contains the .bnf files with the grammars;
+* `data` contains the .csv data file;
 * `target` contains the main .jar file.
 
 ## Dependencies
