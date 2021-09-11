@@ -1,7 +1,6 @@
 package it.units.malelab.learningstl;
 
-import it.units.malelab.learningstl.BuildingBlocks.FitnessFunctions.AbstractFitnessFunction;
-import it.units.malelab.learningstl.BuildingBlocks.FitnessFunctions.SupervisedFitnessFunction;
+import it.units.malelab.learningstl.BuildingBlocks.FitnessFunctions.UnsupervisedFitnessFunction;
 import it.units.malelab.learningstl.BuildingBlocks.ProblemClass;
 import it.units.malelab.learningstl.BuildingBlocks.STLFormulaMapper;
 import it.units.malelab.learningstl.TreeNodes.AbstractTreeNode;
@@ -27,9 +26,6 @@ import it.units.malelab.jgea.representation.tree.Tree;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -73,9 +69,9 @@ public class Main extends Worker {
 
     private void evolution() throws IOException, ExecutionException, InterruptedException {
         Random r = new Random(seed);
-        SupervisedFitnessFunction f = new /*I80FitnessFunction();*/SupervisedFitnessFunction(inputPath, isLocalSearch, r);
+        UnsupervisedFitnessFunction f = new UnsupervisedFitnessFunction(inputPath, isLocalSearch);
         STLFormulaMapper m = new STLFormulaMapper();
-        final ProblemClass<Signal<Map<String, Double>>> p = new ProblemClass<>(grammarPath, f, m);
+        final ProblemClass<Signal<Map<String, Double>>[]> p = new ProblemClass<>(grammarPath, f, m);
         Map<GeneticOperator<Tree<String>>, Double> operators = new LinkedHashMap<>();
         operators.put(new GrammarBasedSubtreeMutation<>(12, p.getGrammar()), 0.2d);
         operators.put(new SameRootSubtreeCrossover<>(12), 0.8d);
@@ -93,31 +89,8 @@ public class Main extends Worker {
         );
         Collection<AbstractTreeNode> solutions = evolver.solve(Misc.cached(p.getFitnessFunction(), 10), new Iterations(50),
                 r, this.executorService, Listener.onExecutor(new PrintStreamListener<>(out, false, 10,
-                        ",", ",",  new Basic(), new Population(), new Diversity(), new BestInfo("%5.3f")), this.executorService));
-        AbstractTreeNode bestFormula = solutions.iterator().next();
-        f.optimizeAndUpdateParams(bestFormula, 1);
-        Files.write(Paths.get(outputPath), (bestFormula.toString() + "\n").getBytes(), StandardOpenOption.APPEND);
-        this.postProcess(bestFormula, p.getFitnessFunction());
-    }
-
-    public void postProcess(AbstractTreeNode bestFormula, AbstractFitnessFunction<Signal<Map<String, Double>>> f) throws IOException {
-        double result;
-        double count = 0.0;
-        for (Signal<Map<String, Double>> signal : f.getPositiveTest()) {
-            result = f.monitorSignal(signal, bestFormula, false);
-            if (result <= 0.0) {
-                ++count;
-            }
-        }
-        Files.write(Paths.get(outputPath), ("Positive Test Misclassification Rate: " + count / f.getPositiveTest().size() + "\n").getBytes(), StandardOpenOption.APPEND);
-        count = 0.0;
-        for (Signal<Map<String, Double>> signal : f.getNegativeTest()) {
-            result = f.monitorSignal(signal, bestFormula, true);
-            if (result <= 0.0) {
-                ++count;
-            }
-        }
-        Files.write(Paths.get(outputPath), ("Negative Test Misclassification Rate: " + count / f.getNegativeTest().size() + "\n").getBytes(), StandardOpenOption.APPEND);
+                        ",", ",",  new Basic(), new Population(), new Diversity(), new BestInfo("%5.3f"),
+                        event -> List.of(new Item("serialized", event.getOrderedPopulation().firsts().iterator().next().getSolution().toString(), "%s"))), this.executorService));
     }
 
 }

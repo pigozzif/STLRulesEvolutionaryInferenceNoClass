@@ -16,7 +16,6 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<Map<Strin
     private final Map<String, double[]> varsBounds = new HashMap<>();
     private double[] temporalBounds;
 
-    // TODO: maybe fix Long Method
     // TODO: does not work at all with latest refactor, BEWARE!
     public List<Signal<Map<String, Double>>[]> parseSignals(String fileName) throws IOException {
         List<Signal<Map<String, Double>>[]> signals = new ArrayList<>();
@@ -28,13 +27,9 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<Map<Strin
         this.temporalBounds = new double[]{0, 99};
         int vehicleIdx = 1;
         boolean isFinished = false;
-        String[] line = new String[header.length + 1];
+        String[] line;
         List<Map<String, Double>> trajectory = new ArrayList<>();
         List<Long> times = new ArrayList<>();
-        //String[] boolNames = boolIndexes.stream().map(i -> header[i]).toArray(String[]::new);
-        //String[] doubleNames = doubleIndexes.stream().map(i -> header[i]).toArray(String[]::new);
-        //boolean[] boolVars = new boolean[boolIndexes.size()];
-        //double[] doubleVars = new double[doubleIndexes.size()];
         while (!isFinished) {
             while (true) {
                 try {
@@ -44,32 +39,31 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<Map<Strin
                     isFinished = true;
                     break;
                 }
-                //for (int idx=0; idx < boolIndexes.size(); ++idx) {
-                //    boolVars[idx] = line[boolIndexes.get(idx)].equals("1");
-                //}
                 Map<String, Double> trajectoryRecord = new HashMap<>();
                 for (int idx=0; idx < header.length; ++idx) {
-                    double val = Double.parseDouble(line[idx]);
+                    double val;
+                    if (line[idx].equals("inf")) {
+                        val = Double.MAX_VALUE;
+                    }
+                    else {
+                        val = Double.parseDouble(line[idx]);
+                    }
                     double[] temp = this.varsBounds.get(header[idx]);
                     temp[0] = Math.min(val, temp[0]);
                     temp[1] = Math.max(val, temp[1]);
-                    //doubleVars[idx] = val;
                     trajectoryRecord.put(header[idx], val);
                 }
-                if (vehicleIdx != Integer.parseInt(line[14])) {
+                if (vehicleIdx != Integer.parseInt(line[0])) {
+                    createSignalAndUpdateWithSlidingWindow(trajectory, times, signals);
+                    vehicleIdx = Integer.parseInt(line[0]);
+                    trajectory.clear();
+                    trajectory.add(trajectoryRecord);
+                    times.add(Long.parseLong(line[1]));
                     break;
                 }
-                trajectory.add(trajectoryRecord);//new TrajectoryRecord(boolVars, boolNames, doubleVars, doubleNames));
-                times.add(Long.parseLong(line[15].trim()));
+                trajectory.add(trajectoryRecord);
+                times.add(Long.parseLong(line[1].trim()));
             }
-            //if (line[14].equals("3")) {
-            //    break;
-            //}
-            createSignalAndUpdateWithSlidingWindow(trajectory, times, signals);
-            vehicleIdx = Integer.parseInt(line[14]);
-            // TODO: THIS LINE IS STILL FAULTY!
-            //trajectory.add(trajectoryRecord);//new TrajectoryRecord(boolVars, boolNames, doubleVars, doubleNames));
-            times.add(Long.parseLong(line[15]));
         }
         reader.close();
         return signals;
@@ -104,7 +98,12 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<Map<Strin
             }
             currSignal.endAt(time);
             ++time;
-            innerSignal[t] = currSignal;
+            try {
+                innerSignal[t] = currSignal;
+            }
+            catch (Exception e) {
+                throw e;
+            }
             j -= this.windowSize / 2;
             if (currSignal.size() != this.windowSize) {
                 break;

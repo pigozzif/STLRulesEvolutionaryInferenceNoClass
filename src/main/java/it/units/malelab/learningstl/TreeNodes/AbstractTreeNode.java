@@ -81,44 +81,20 @@ public abstract class AbstractTreeNode implements Sized {
 
     @Override
     public String toString() {
-        return traversePreOrder(this);
-    }
-
-    private static String traversePreOrder(AbstractTreeNode node) {
-        if (node == null) {
-            return "\n";
+        String children;
+        if (this.firstChild == null && this.secondChild == null) {
+            children = "";
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(node.getSymbol());
-        String pointerRight = "└──";
-        boolean hasRightChild = node.getFirstChild() != null;
-        String pointerLeft = (hasRightChild) ? "├──" : "└──";
-        traverseNodes(sb, "", pointerLeft, node.getSecondChild(), hasRightChild);
-        traverseNodes(sb, "", pointerRight, node.getFirstChild(), false);
-        sb.append("\n");
-        return sb.toString();
-    }
-
-    private static void traverseNodes(StringBuilder sb, String padding, String pointer, AbstractTreeNode node, boolean hasRightSibling) {
-        if (node != null) {
-            sb.append("\n");
-            sb.append(padding);
-            sb.append(pointer);
-            sb.append(node.getSymbol());
-            StringBuilder paddingBuilder = new StringBuilder(padding);
-            if (hasRightSibling) {
-                paddingBuilder.append("│  ");
-            }
-            else {
-                paddingBuilder.append("   ");
-            }
-            String paddingForBoth = paddingBuilder.toString();
-            String pointerRight = "└──";
-            boolean hasRightChild = node.getFirstChild() != null;
-            String pointerLeft = (hasRightChild) ? "├──" : "└──";
-            traverseNodes(sb, paddingForBoth, pointerLeft, node.getSecondChild(), hasRightChild);
-            traverseNodes(sb, paddingForBoth, pointerRight, node.getFirstChild(), false);
+        else if (this.firstChild == null) {
+            children = "[" + this.secondChild.toString() + "]";
         }
+        else if (this.secondChild == null) {
+            children = "[" + this.firstChild.toString() + "]";
+        }
+        else {
+            children = "[" + this.firstChild.toString() + "," + this.secondChild.toString() + "]";
+        }
+        return this.getSymbol() + children;
     }
 
 }

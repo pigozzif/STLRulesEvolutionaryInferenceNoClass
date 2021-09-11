@@ -26,7 +26,7 @@ public class UnsupervisedFitnessFunction extends AbstractFitnessFunction<Signal<
     public Double apply(AbstractTreeNode monitor) {
         double count = 0.0;
             if (this.isLocalSearch) {
-                double[] newParams = LocalSearch.optimize(monitor, this, 15);
+                double[] newParams = LocalSearch.optimize(monitor, this, 1);
                 monitor.propagateParameters(newParams);
             }
         for (Signal<Map<String, Double>>[] l : this.signals) {
