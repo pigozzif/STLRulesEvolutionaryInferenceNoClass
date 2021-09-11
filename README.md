@@ -23,11 +23,12 @@ Argument       | Type                                         | Optional (yes/no
 ---------------|----------------------------------------------|-------------------|-------------------------
 seed           | integer                                      | no                | -
 grammar        | string                                       | no                | -
+local_search   | {true, false}                                | no                | -
 input          | string                                       | yes               | ./data/traffic.csv
 output         | string                                       | yes               | ./output/
 threads        | integer                                      | yes               | # available cores on CPU
 
-The description for each argument is as follows:
+where {...} denotes a finite and discrete set of possible choices for the corresponding argument. The description for each argument is as follows:
 * seed: the random seed for the experiment;
 * grammar: a (relative) path to the .bnf file for the grammar;
 * input: a (relative) path to the .csv file containing the traffic data;
