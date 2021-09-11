@@ -3,6 +3,11 @@
 This is the official repository for the Applied Sciences paper "Mining Road Traffic Rules with Signal Temporal Logic and Grammatical Evolution", hosting all the code necessary to replicate the experiments. This work is mostly based on Federico Pigozzi's master's thesis and was carried on at the Machine Learning Laboratory (MaLeLab) at the Department of Engineering and Architecture, University of Trieste (Italy).
 
 ## Scope
+By running
+``
+java -cp libs:JGEA.jar:libs/moonlight.jar:libs/jblas-1.2.4.jar:target/STLRulesEvolutionaryInferenceNoClass.jar it.untis.malelab.learningstl.Main {args}
+``
+where `{args}` is a placeholder for the arguments you must provide (see below), you will launch an evolutionary optimization of the formula structure and parameters for Signal Temporal Logic rules of a real traffic dataset. At the same time, a number of evolution metadata will be saved inside the `output` folder.
 
 ## Structure
 * `src` contains all the source code for the project;
