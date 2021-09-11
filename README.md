@@ -36,6 +36,7 @@ threads        | integer                                      | yes             
 where {...} denotes a finite and discrete set of possible choices for the corresponding argument. The description for each argument is as follows:
 * seed: the random seed for the experiment;
 * grammar: a (relative) path to the .bnf file for the grammar;
+* local_search: whether to use the GP-UCB local search procedure or not;
 * input: a (relative) path to the .csv file containing the traffic data;
 * output: a (relative) path to the directory to save output files into;
 * threads: the number of threads to perform evolution with. Defaults to the number of available cores on the current CPU. Parallelization is taken care by JGEA and implements a distributed fitness assessment.
