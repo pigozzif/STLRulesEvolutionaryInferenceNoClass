@@ -1,5 +1,6 @@
 package it.units.malelab.learningstl;
 
+import it.units.malelab.jgea.core.evolver.Evolver;
 import it.units.malelab.learningstl.BuildingBlocks.FitnessFunctions.UnsupervisedFitnessFunction;
 import it.units.malelab.learningstl.BuildingBlocks.ProblemClass;
 import it.units.malelab.learningstl.BuildingBlocks.STLFormulaMapper;
@@ -46,11 +47,11 @@ public class Main extends Worker {
             throw new IllegalArgumentException("Random Seed not Valid");
         }
         seed = Integer.parseInt(random);
-        grammarPath = Args.a(args, "grammar", null);
-        outputPath = Args.a(args, "output", null) + seed + ".csv";
-        out = new PrintStream(new FileOutputStream(outputPath, true), true);
-        inputPath = Args.a(args, "input", null);
         isLocalSearch = Boolean.parseBoolean(Args.a(args, "local_search", null));
+        grammarPath = Args.a(args, "grammar", null);
+        outputPath = Args.a(args, "output", "./output/") + isLocalSearch + "." + seed + ".csv";
+        out = new PrintStream(new FileOutputStream(outputPath, true), true);
+        inputPath = Args.a(args, "input", "./data/trafficData.csv");
         new Main(args);
     }
 
@@ -71,11 +72,11 @@ public class Main extends Worker {
         Random r = new Random(seed);
         UnsupervisedFitnessFunction f = new UnsupervisedFitnessFunction(inputPath, isLocalSearch);
         STLFormulaMapper m = new STLFormulaMapper();
-        final ProblemClass<Signal<Map<String, Double>>[]> p = new ProblemClass<>(grammarPath, f, m);
+        final ProblemClass<Signal<double[]>[]> p = new ProblemClass<>(grammarPath, f, m);
         Map<GeneticOperator<Tree<String>>, Double> operators = new LinkedHashMap<>();
         operators.put(new GrammarBasedSubtreeMutation<>(12, p.getGrammar()), 0.2d);
         operators.put(new SameRootSubtreeCrossover<>(12), 0.8d);
-        StandardWithEnforcedDiversityEvolver<Tree<String>, AbstractTreeNode, Double> evolver = new StandardWithEnforcedDiversityEvolver<>(
+        Evolver<Tree<String>, AbstractTreeNode, Double> evolver = new StandardWithEnforcedDiversityEvolver<>(
                     p.getSolutionMapper(),
                     new GrammarRampedHalfAndHalf<>(0, 12, p.getGrammar()),
                     PartialComparator.from(Double.class).comparing(Individual::getFitness),

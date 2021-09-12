@@ -10,5 +10,5 @@
 <num> ::= <digit> <digit> <digit>
 <comp> ::= < | >
 <digit> ::= 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
-<num_var> ::= v_Vel | NE_dist | N_dist | NW_dist | W_dist | SW_dist | S_dist | SE_dist | E_dist
+<num_var> ::= v_Vel | NE | N | NW | W | SW | S | SE | E
 <interval_symbol> ::= <digit> <digit>

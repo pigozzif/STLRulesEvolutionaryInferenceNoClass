@@ -10,9 +10,9 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 
-public class UnsupervisedFitnessFunction extends AbstractFitnessFunction<Signal<Map<String, Double>>[]> {
+public class UnsupervisedFitnessFunction extends AbstractFitnessFunction<Signal<double[]>[]> {
 
-    private final List<Signal<Map<String, Double>>[]> signals;
+    private final List<Signal<double[]>[]> signals;
     private final int numFragments;
 
     public UnsupervisedFitnessFunction(String path, boolean localSearch) throws IOException {
@@ -29,8 +29,8 @@ public class UnsupervisedFitnessFunction extends AbstractFitnessFunction<Signal<
                 double[] newParams = LocalSearch.optimize(monitor, this, 1);
                 monitor.propagateParameters(newParams);
             }
-        for (Signal<Map<String, Double>>[] l : this.signals) {
-            for (Signal<Map<String, Double>> s : l) {
+        for (Signal<double[]>[] l : this.signals) {
+            for (Signal<double[]> s : l) {
                     if (s.size() <= monitor.getNecessaryLength()) {
                         count += PENALTY_VALUE;
                     }
@@ -46,8 +46,8 @@ public class UnsupervisedFitnessFunction extends AbstractFitnessFunction<Signal<
     public BiFunction<AbstractTreeNode, double[], Double> getObjective() {
         return (AbstractTreeNode node, double[] params) -> {node.propagateParameters(params);
             double count = 0.0;
-            for (Signal<Map<String, Double>>[] l : this.signals) {
-                for (Signal<Map<String, Double>> s : l) {
+            for (Signal<double[]>[] l : this.signals) {
+                for (Signal<double[]> s : l) {
                     if (s.size() <= node.getNecessaryLength()) {
                         count += PENALTY_VALUE;
                     } else {

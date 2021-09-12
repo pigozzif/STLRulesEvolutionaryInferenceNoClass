@@ -6,19 +6,18 @@ import it.units.malelab.jgea.core.util.Sized;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
 
 public abstract class AbstractTreeNode implements Sized {
 
-    protected Function<Signal<Map<String, Double>>, TemporalMonitor<Map<String, Double>, Double>> func;
+    protected Function<Signal<double[]>, TemporalMonitor<double[], Double>> func;
     protected AbstractTreeNode firstChild;
     protected AbstractTreeNode secondChild;
     protected String symbol;
 
-    public Function<Signal<Map<String, Double>>, TemporalMonitor<Map<String, Double>, Double>> getOperator() {
+    public Function<Signal<double[]>, TemporalMonitor<double[], Double>> getOperator() {
         return this.func;
     }
 
