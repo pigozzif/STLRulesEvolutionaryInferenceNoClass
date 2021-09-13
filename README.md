@@ -9,6 +9,19 @@ java -cp libs:JGEA.jar:libs/moonlight.jar:libs/jblas-1.2.4.jar:target/STLRulesEv
 ```
 where `{args}` is a placeholder for the arguments you must provide (see below), you will launch a grammar-based evolutionary optimization of the formula structure and parameters for Signal Temporal Logic rules of a real traffic dataset. At the same time, a number of evolution metadata will be saved inside the `output` folder. The project has been tested with Java `14.0.2`.
 
+### Warning
+On more recent Linux versions, dynamic libraries for `jblas` may not link properly. In this case, run the following commands:
+```
+unzip dlibs.zip
+```
+to unzip a directory containing the necessary .so files, then
+```
+sudo mv dlibs/libgfortran.so.3.0.0 /usr/local/lib/
+sudo mv dlibs/libquadmath.so.0.0.0 /usr/local/lib/
+sudo ldconfig
+```
+to move the .so files in the appropriate place and configure them.
+
 ## Structure
 * `src` contains all the source code for the project;
 * `libs` contains the .jar files for the dependencies (see below);
@@ -38,7 +51,7 @@ threads        | integer                                      | yes             
 where {...} denotes a finite and discrete set of possible choices for the corresponding argument. The description for each argument is as follows:
 * seed: the random seed for the experiment;
 * grammar: a (relative) path to the .bnf file for the grammar;
-* local_search: whether to use the GP-UCB local search procedure or not;
+* local_search: whether to use the GP-UCB local search procedure for the parameters or not;
 * input: a (relative) path to the .csv file containing the traffic data;
 * output: a (relative) path to the directory to save output files into;
 * threads: the number of threads to perform evolution with. Defaults to the number of available cores on the current CPU. Parallelization is taken care by JGEA and implements a distributed fitness assessment.
