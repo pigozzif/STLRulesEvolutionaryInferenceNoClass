@@ -10,7 +10,7 @@ java -cp libs:JGEA.jar:libs/moonlight.jar:libs/jblas-1.2.4.jar:target/STLRulesEv
 where `{args}` is a placeholder for the arguments you must provide (see below), you will launch a grammar-based evolutionary optimization of the formula structure and parameters for Signal Temporal Logic rules of a real traffic dataset. At the same time, a number of evolution metadata will be saved inside the `output` folder. The project has been tested with Java `14.0.2`.
 
 ### Warning
-On more recent Linux versions, dynamic libraries for `jblas` may not link properly. In this case, run the following commands:
+On more recent Linux versions, dynamic libraries for jblas may not link properly. In this case, run the following commands:
 ```
 unzip dlibs.zip
 ```
