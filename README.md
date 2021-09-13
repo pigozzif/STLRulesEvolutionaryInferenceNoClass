@@ -27,7 +27,8 @@ to move the .so files in the appropriate place and configure them.
 * `libs` contains the .jar files for the dependencies (see below);
 * `grammars` contains the .bnf files with the grammars;
 * `data` contains the .csv data file;
-* `target` contains the main .jar file.
+* `target` contains the main .jar file;
+* `dlibs.zip` is an emergency kit for the aforementioned warning.
 
 ## Dependencies
 The project relies on:
