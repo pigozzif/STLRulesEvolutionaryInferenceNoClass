@@ -51,7 +51,7 @@ public class Main extends Worker {
         grammarPath = Args.a(args, "grammar", null);
         outputPath = Args.a(args, "output", "./output/") + isLocalSearch + "." + seed + ".csv";
         out = new PrintStream(new FileOutputStream(outputPath, true), true);
-        inputPath = Args.a(args, "input", "./data/trafficData.csv");
+        inputPath = Args.a(args, "input", null);
         new Main(args);
     }
 
@@ -72,7 +72,7 @@ public class Main extends Worker {
         Random r = new Random(seed);
         UnsupervisedFitnessFunction f = new UnsupervisedFitnessFunction(inputPath, isLocalSearch);
         STLFormulaMapper m = new STLFormulaMapper();
-        final ProblemClass<Signal<double[]>[]> p = new ProblemClass<>(grammarPath, f, m);
+        final ProblemClass<Signal<Map<String, Double>>> p = new ProblemClass<>(grammarPath, f, m);
         Map<GeneticOperator<Tree<String>>, Double> operators = new LinkedHashMap<>();
         operators.put(new GrammarBasedSubtreeMutation<>(12, p.getGrammar()), 0.2d);
         operators.put(new SameRootSubtreeCrossover<>(12), 0.8d);

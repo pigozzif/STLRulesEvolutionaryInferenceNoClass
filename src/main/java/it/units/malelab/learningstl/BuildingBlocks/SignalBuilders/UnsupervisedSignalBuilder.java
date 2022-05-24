@@ -10,20 +10,19 @@ import java.util.List;
 import java.util.Map;
 
 
-public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<double[]>[]> {
+public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<Map<String, Double>>> {
 
-    private final int windowSize = 200;
     private final Map<String, double[]> varsBounds = new HashMap<>();
     private double[] temporalBounds;
     public static final Map<String, Integer> fromVarToIdx = new HashMap<>();
 
-    public List<Signal<double[]>[]> parseSignals(String fileName) throws IOException {
-        List<Signal<double[]>[]> signals = new ArrayList<>();
+    public List<Signal<Map<String, Double>>> parseSignals(String fileName) throws IOException {
+        List<Signal<Map<String, Double>>> signals = new ArrayList<>();
         BufferedReader reader = this.createReaderFromFile(fileName);
         String[] header = reader.readLine().split(",");
         int i = 0;
         for (String var : header) {
-            if (var.equals("Vehicle_ID") || var.equals("Global_Time")) {
+            if (var.equals("id") || var.equals("time")) {
                 continue;
             }
             this.varsBounds.put(var, new double[]{Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY});
@@ -56,7 +55,7 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<double[]>
         this.temporalBounds = new double[]{0, 99};
         int vehicleIdx = 1;
         boolean isFinished = false;
-        List<double[]> trajectory = new ArrayList<>();
+        List<Map<String, Double>> trajectory = new ArrayList<>();
         List<Long> times = new ArrayList<>();
         while (!isFinished) {
             while (true) {
@@ -67,7 +66,7 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<double[]>
                     isFinished = true;
                     break;
                 }
-                double[] trajectoryRecord = new double[header.length - 2];
+                Map<String, Double> trajectoryRecord = new HashMap<>();
                 for (int idx=2; idx < header.length; ++idx) {
                     double val;
                     if (line[idx].equals("inf")) {
@@ -76,10 +75,10 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<double[]>
                     else {
                         val = (Double.parseDouble(line[idx]) - this.varsBounds.get(header[idx])[0]) / (this.varsBounds.get(header[idx])[1] - this.varsBounds.get(header[idx])[0]);
                     }
-                    trajectoryRecord[idx - 2] = val;
+                    trajectoryRecord.put(header[idx], val);
                 }
                 if (vehicleIdx != Integer.parseInt(line[0])) {
-                    createSignalAndUpdateWithSlidingWindow(trajectory, times, signals);
+                    createSignalAndUpdate(trajectory, times, signals);
                     vehicleIdx = Integer.parseInt(line[0]);
                     trajectory.clear();
                     trajectory.add(trajectoryRecord);
@@ -88,9 +87,12 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<double[]>
                 }
                 trajectory.add(trajectoryRecord);
                 times.add(Long.parseLong(line[1].trim()));
+                if (signals.size() >= 10) {
+                    isFinished = true;
+                }
             }
         }
-        createSignalAndUpdateWithSlidingWindow(trajectory, times, signals);
+        createSignalAndUpdate(trajectory, times, signals);
         trajectory.clear();
         reader.close();
         return signals;
@@ -104,37 +106,6 @@ public class UnsupervisedSignalBuilder implements SignalBuilder<Signal<double[]>
     @Override
     public double[] getTemporalBounds() {
         return this.temporalBounds;
-    }
-
-    private void createSignalAndUpdateWithSlidingWindow(List<double[]> trajectory, List<Long> times,
-                                              List<Signal<double[]>[]> signals) {
-        if (times.size() == 0) {
-            return;
-        }
-        Signal<?>[] innerSignal = new Signal<?>[(trajectory.size() * 2) / this.windowSize];
-        int length = times.size();
-        int j = 0;
-        int i;
-        int t = 0;
-        double time = 0.0;
-        while (j < length) {
-            Signal<double[]> currSignal = new Signal<>();
-            for (i = 0; i < this.windowSize && j < length; ++i, ++j) {
-                currSignal.add(time, trajectory.get(j));
-                ++time;
-            }
-            currSignal.endAt(time);
-            ++time;
-            innerSignal[t] = currSignal;
-            j -= this.windowSize / 2;
-            if (currSignal.size() != this.windowSize) {
-                break;
-            }
-            ++t;
-        }
-        signals.add((Signal<double[]>[]) innerSignal);
-        trajectory.clear();
-        times.clear();
     }
 
     private static void createSignalAndUpdate(List<Map<String, Double>> trajectory, List<Long> times,

@@ -3,8 +3,6 @@ package it.units.malelab.learningstl.TreeNodes;
 import it.units.malelab.learningstl.BuildingBlocks.CompareSign;
 import eu.quanticol.moonlight.monitoring.temporal.TemporalMonitor;
 import it.units.malelab.jgea.representation.tree.Tree;
-import it.units.malelab.learningstl.BuildingBlocks.SignalBuilders.UnsupervisedSignalBuilder;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,7 @@ public class NumericTreeNode extends AbstractTreeNode {
         else {
             this.number = this.parseNumber(siblings.get(2).childStream().collect(Collectors.toList()));
         }
-        this.func = x -> TemporalMonitor.atomicMonitor(y -> this.cs.getValue().apply(y[UnsupervisedSignalBuilder.fromVarToIdx.get(this.var)], this.number));
+        this.func = x -> TemporalMonitor.atomicMonitor(y -> this.cs.getValue().apply(y.get(this.var), this.number));
     }
 
     private double parseNumber(List<Tree<String>> leaves) {
