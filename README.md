@@ -1,4 +1,4 @@
-# STLRulesEvolutionaryInferenceNoClass
+# Mining Road Traffic Rules with Signal Temporal Logic and Grammatical Evolution
 
 This is the official repository for the Applied Sciences paper "Mining Road Traffic Rules with Signal Temporal Logic and Grammatical Evolution", hosting all the code necessary to replicate the experiments. This work is mostly based on Federico Pigozzi's master's thesis and was carried on at the Machine Learning Laboratory (MaLeLab) at the Department of Engineering and Architecture, University of Trieste (Italy).
 
@@ -56,6 +56,7 @@ where {...} denotes a finite and discrete set of possible choices for the corres
 * threads: the number of threads to perform evolution with. Defaults to the number of available cores on the current CPU. Parallelization is taken care by JGEA and implements a distributed fitness assessment.
 
 ## Bibliography
+Please cite as
 ```
 @article{pigozzi2021mining,
   title={Mining road traffic rules with signal temporal logic and grammar-based genetic programming},
