@@ -38,7 +38,7 @@ public class Main extends Worker {
     private static String grammarPath;
     private static String outputPath;
     private static String inputPath;
-    private static boolean isLocalSearch;
+    private static final boolean isLocalSearch = false;
 
     public static void main(String[] args) throws IOException {
         String errorMessage = "notFound";
@@ -47,7 +47,6 @@ public class Main extends Worker {
             throw new IllegalArgumentException("Random Seed not Valid");
         }
         seed = Integer.parseInt(random);
-        isLocalSearch = Boolean.parseBoolean(Args.a(args, "local_search", null));
         grammarPath = Args.a(args, "grammar", null);
         outputPath = Args.a(args, "output", "./output/") + isLocalSearch + "." + seed + ".csv";
         out = new PrintStream(new FileOutputStream(outputPath, true), true);
