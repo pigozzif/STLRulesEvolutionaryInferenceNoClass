@@ -44,7 +44,6 @@ Argument       | Type                                         | Optional (yes/no
 ---------------|----------------------------------------------|-------------------|-------------------------
 seed           | integer                                      | no                | -
 grammar        | string                                       | no                | -
-local_search   | {true, false}                                | no                | -
 input          | string                                       | yes               | -
 output         | string                                       | yes               | ./output/
 threads        | integer                                      | yes               | # available cores on CPU
@@ -52,10 +51,20 @@ threads        | integer                                      | yes             
 where {...} denotes a finite and discrete set of possible choices for the corresponding argument. The description for each argument is as follows:
 * seed: the random seed for the experiment;
 * grammar: a (relative) path to the .bnf file for the grammar;
-* local_search: whether to use the GP-UCB local search procedure for the parameters or not;
 * input: a (relative) path to the .csv file containing the data;
 * output: a (relative) path to the directory to save output files into;
 * threads: the number of threads to perform evolution with. Defaults to the number of available cores on the current CPU. Parallelization is taken care by JGEA and implements a distributed fitness assessment.
 
 ## Bibliography
-TODO, if accepted
+```
+@article{pigozzi2021mining,
+  title={Mining road traffic rules with signal temporal logic and grammar-based genetic programming},
+  author={Pigozzi, Federico and Medvet, Eric and Nenzi, Laura},
+  journal={Applied Sciences},
+  volume={11},
+  number={22},
+  pages={10573},
+  year={2021},
+  publisher={MDPI}
+}
+```
