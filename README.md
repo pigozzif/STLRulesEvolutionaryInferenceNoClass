@@ -27,7 +27,7 @@ to move the .so files in the appropriate place and configure them.
 * `src` contains all the source code for the project;
 * `libs` contains the .jar files for the dependencies (see below);
 * `grammars` contains the .bnf files with the grammars;
-* `data` contains the .csv data file;
+* `data` contains a sample .csv data file with one vehicle trajectory (for space issues);
 * `target` contains the main .jar file;
 * `dlibs.zip` is an emergency kit for the aforementioned warning.
 
